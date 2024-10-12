@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-only
 // Copyright (C) 2022, Input Labs Oy.
 
-#include <stdio.h>
 #include <stdbool.h>
 #include <tusb.h>
 #include <device/usbd_pvt.h>

@@ -1,10 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-only
 // Copyright (C) 2022, Input Labs Oy.
 
-#include <stdio.h>
-#include <pico/stdio.h>
 #include <pico/bootrom.h>
-#include <hardware/watchdog.h>
 #include "config.h"
 #include "self_test.h"
 #include "logging.h"
