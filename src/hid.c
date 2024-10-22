@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-only
-// Copyright (C) 2022, Input Labs Oy.
+// Copyright (C) 2022-2024, Input Labs Oy.
 
 /*
 HID layer is responsible for managing all the outputs that are sent to the
@@ -428,7 +428,6 @@ void hid_gamepad_reset() {
 }
 
 void hid_report() {
-    static bool is_tud_ready = false;
     static bool is_tud_ready_logged = false;
     static uint8_t priority_mouse = 0;
     static uint8_t priority_gamepad = 0;
@@ -443,7 +442,6 @@ void hid_report() {
     if (!hid_allow_communication) return;
     tud_task();
     if (tud_ready()) {
-        is_tud_ready = true;
         if (!is_tud_ready_logged) {
             is_tud_ready_logged = true;
             info("USB: tud_ready TRUE\n");
@@ -477,7 +475,6 @@ void hid_report() {
         // aggregated with the next cycle.
         hid_gamepad_reset();
     } else {
-        is_tud_ready = false;
         if (is_tud_ready_logged) {
             is_tud_ready_logged = false;
             info("USB: tud_ready FALSE\n");

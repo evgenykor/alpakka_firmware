@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-only
-// Copyright (C) 2022, Input Labs Oy.
+// Copyright (C) 2022-2024, Input Labs Oy.
 
 #include <stdio.h>
 #include <math.h>
@@ -173,7 +173,6 @@ void Thumbstick__config_glyphstick(Thumbstick *self, Actions actions, Glyph glyp
 }
 
 void Thumbstick__report_glyphstick(Thumbstick *self, Glyph input) {
-    bool matched = false;
     // Iterate over all defined glyphs.
     uint8_t nglyphs = self->glyphstick_index;
     for(uint8_t i=0; i<nglyphs; i++) {

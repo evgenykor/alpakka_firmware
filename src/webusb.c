@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-only
-// Copyright (C) 2022, Input Labs Oy.
+// Copyright (C) 2022-2024, Input Labs Oy.
 
 #include <stdio.h>
 #include <stdbool.h>
@@ -14,7 +14,7 @@
 #include "common.h"
 #include "logging.h"
 
-char webusb_buffer[WEBUSB_BUFFER_SIZE] = {0,};
+uint8_t webusb_buffer[WEBUSB_BUFFER_SIZE] = {0,};
 uint16_t webusb_ptr_in = 0;
 uint16_t webusb_ptr_out = 0;
 bool webusb_timedout = false;
@@ -50,7 +50,7 @@ bool webusb_transfer(Ctrl ctrl) {
     // Claim USB endpoint.
     if (!usbd_edpt_claim(0, ADDR_WEBUSB_IN)) return false;
     // Transfer data.
-    if (!usbd_edpt_xfer(0, ADDR_WEBUSB_IN, (char*)&ctrl, ctrl.len+4)) return false;
+    if (!usbd_edpt_xfer(0, ADDR_WEBUSB_IN, (uint8_t*)&ctrl, ctrl.len+4)) return false;
     // Release USB endpoint.
     usbd_edpt_release(0, ADDR_WEBUSB_IN);
     return true;
@@ -108,13 +108,14 @@ bool webusb_flush() {
 
 // Queue data to be sent (flushed) to the app later.
 void webusb_write(char *msg) {
-    uint16_t len = strlen(msg);
+    const size_t len = strlen(msg);
     // If the buffer is full, ignore the latest messages.
     if (webusb_ptr_in + len >= WEBUSB_BUFFER_SIZE-64-1) {
         return;
     }
     // Add message to the buffer.
-    strncpy(webusb_buffer + webusb_ptr_in, msg, len);
+    memcpy((char*)(webusb_buffer + webusb_ptr_in), msg, len);
+    webusb_buffer[webusb_ptr_in + len] = '\0';
     webusb_ptr_in += len;
     // If the configuration is still running (still not in the main loop), and
     // the webusb connection has not been flagged as timed out, then force

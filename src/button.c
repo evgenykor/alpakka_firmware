@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-only
-// Copyright (C) 2022, Input Labs Oy.
+// Copyright (C) 2022-2024, Input Labs Oy.
 
 #include <stdio.h>
 #include <string.h>
@@ -36,6 +36,8 @@ bool Button__is_pressed(Button *self) {
     else if (is_between(self->pin, PIN_GROUP_IO_1, PIN_GROUP_IO_1_END)) {
         return bus_i2c_io_cache_read(1, self->pin - PIN_GROUP_IO_1);
     }
+    // default false??
+    return false;
 }
 
 void Button__report(Button *self) {

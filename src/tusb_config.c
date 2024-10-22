@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-only
-// Copyright (C) 2022, Input Labs Oy.
+// Copyright (C) 2022-2024, Input Labs Oy.
 
 #include <tusb_config.h>
 #include <tusb.h>
@@ -87,7 +87,7 @@ const uint16_t *tud_descriptor_string_cb(uint8_t index, uint16_t langid) {
     static uint16_t response[64];
     const char *string = descriptor_string[index];
     uint8_t i = 0;
-    for (i; string[i]; i++) {
+    for (; string[i]; i++) {
         response[i + 1] = string[i];
     }
     response[0] = TUSB_DESC_STRING << 8;  // String type.

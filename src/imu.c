@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-only
-// Copyright (C) 2022, Input Labs Oy.
+// Copyright (C) 2022-2024, Input Labs Oy.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -132,7 +132,7 @@ Vector imu_read_accel() {
     };
 }
 
-Vector imu_calibrate_single(uint8_t cs, bool mode, double* x, double* y, double* z) {
+void imu_calibrate_single(uint8_t cs, bool mode, double* x, double* y, double* z) {
     char *mode_str = mode ? "accel" : "gyro";
     info("IMU: cs=%i calibrating %s...\n", cs, mode_str);
     double sum_x = 0;

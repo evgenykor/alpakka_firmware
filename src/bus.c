@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-only
-// Copyright (C) 2022, Input Labs Oy.
+// Copyright (C) 2022-2024, Input Labs Oy.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -50,6 +50,8 @@ Tristate bus_i2c_io_tristate(uint8_t index) {
     if ( up !=  down) return TRIESTATE_FLOAT;
     if (!up && !down) return TRIESTATE_DOWN;
     if ( up &&  down) return TRIESTATE_UP;
+    // default TRIESTATE_UP??
+    return TRIESTATE_UP;
 }
 
 void bus_i2c_io_pcb_gen_determine() {
