@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-2.0-only
-# Copyright (C) 2022, Input Labs Oy.
+# Copyright (C) 2022-2024, Input Labs Oy.
 
 cmake_minimum_required(VERSION 3.16)
 
@@ -20,6 +20,8 @@ pico_sdk_init()
 add_executable(${PROJECT}
     src/main.c
 )
+
+target_compile_options(${PROJECT} PRIVATE -Wall -Werror)
 
 target_link_libraries(${PROJECT}
     pico_stdlib
