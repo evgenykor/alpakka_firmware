@@ -34,3 +34,4 @@ void led_blink_mask(uint8_t mask);
 void led_show();
 void led_show_cycle_step();
 void led_board_set(bool state);
+void led_board_blink();

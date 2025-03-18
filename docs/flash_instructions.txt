@@ -1,0 +1,41 @@
+How to put devices into Bootsel mode
+------------------------------------
+- If the device is factory new, it will go into Bootsel mode automatically when connected.
+- If the device has an old firmware installed, there are multiple ways:
+  - Option 1: Use the Ctrl app > Tools > Commands > Restart in bootsel mode.
+  - Option 2: In the controller, hold Home+Select while the controller is connected via USB.
+  - Option 3: In the Alpakka v1, double press the reset button next to the USB port (see manual).
+  - Option 4: In the Alpakka v0, hold the white button in the Raspberry Pico while connecting the USB cable.
+  - Option 5: In the dongle, hold the multifunction button while connecting the USB cable.
+
+
+Flash Alpakka v0 controller (with Raspberry Pico core)
+------------------------------------------------------
+- Put the controller in Boolsel mode (RPI-RP2 drive appears).
+- Copy "alpakka_pico.uf2" to RPI-RP2 drive.
+- Controller turns on automatically (LEDs blinking).
+
+
+Flash Alpakka v1 controller (with Marmota core)
+-----------------------------------------------
+- Put the controller in Boolsel mode (RPI-RP2 drive appears).
+- Copy "wireless_submodule.uf2" to RPI-RP2 drive.
+- Wait until the blinking LED stops, and RPI-RP2 re-appears (~30 seconds).
+- Copy "alpakka_marmota.uf2" to RPI-RP2 drive.
+- Controller turns on automatically (LEDs blinking).
+
+
+Flash Dongle (with Marmota core)
+--------------------------------
+- Put the dongle in Boolsel mode (RPI-RP2 drive appears).
+- Copy "wireless_submodule.uf2" to RPI-RP2 drive.
+- Wait until the blinking LED stops, and RPI-RP2 re-appears (~30 seconds).
+- Copy "dongle_marmota.uf2" to RPI-RP2 drive.
+- Dongle turns on automatically (LED is on).
+
+
+After flashing
+--------------
+- A horizontal-vertical LED blinking pattern means calibration is missing (or other problems).
+- Check the manual about how to calibrate.
+- If the LED warning pattern persist after calibration, check Ctrl app logs.
