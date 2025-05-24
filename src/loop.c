@@ -85,9 +85,11 @@ static void set_wired() {
 static void set_wireless() {
     info("LOOP: Wireless\n");
     device_mode = WIRELESS;
+    // Show the animation for a fixed time (in lack of a proper pairing system).
     led_show_cycle2();
     sleep_ms(2000);
     led_show();
+    // Prepare UART.
     wireless_set_uart_data_mode(true);
 }
 
