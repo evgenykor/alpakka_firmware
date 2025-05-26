@@ -1,23 +1,33 @@
-How to put devices into Bootsel mode
-------------------------------------
+How to put devices into Bootsel mode (prepared to be flashed)
+-------------------------------------------------------------
 - If the device is factory new, it will go into Bootsel mode automatically when connected.
-- If the device has an old firmware installed, there are multiple ways:
-  - Option 1: Use the Ctrl app > Tools > Commands > Restart in bootsel mode.
-  - Option 2: In the controller, hold Home+Select while the controller is connected via USB.
-  - Option 3: In the Alpakka v1, double press the reset button next to the USB port (see manual).
-  - Option 4: In the Alpakka v0, hold the white button in the Raspberry Pico while connecting the USB cable.
-  - Option 5: In the dongle, hold the multifunction button while connecting the USB cable.
+- If the device already has firmware installed, see below:
+
+All devices (controller and dongle):
+- Ctrl app: Use the Ctrl app > Tools > Commands > Restart in bootsel mode.
+
+Controller (all versions):
+- Button shortcut: In the controller, hold Home+Select (central upper-left) while the controller is connected via USB.
+
+Controller (v1):
+- Double press the (Marmota) reset button next to the USB port (see manual: https://inputlabs.io/alpakka/manual/wireless).
+
+Controller (v0):
+- Remove the rear cover, and hold the white button in the Raspberry Pico while connecting the USB cable.
+
+Dongle:
+- Hold the dongle multifunction button (press the case) while connecting the USB cable.
 
 
-Flash Alpakka v0 controller (with Raspberry Pico core)
-------------------------------------------------------
+Flash Alpakka v0 controller (with Raspberry Pico board)
+-------------------------------------------------------
 - Put the controller in Boolsel mode (RPI-RP2 drive appears).
 - Copy "alpakka_pico.uf2" to RPI-RP2 drive.
 - Controller turns on automatically (LEDs blinking).
 
 
-Flash Alpakka v1 controller (with Marmota core)
------------------------------------------------
+Flash Alpakka v1 controller (with Marmota module)
+-------------------------------------------------
 - Put the controller in Boolsel mode (RPI-RP2 drive appears).
 - Copy "wireless_submodule.uf2" to RPI-RP2 drive.
 - Wait until the blinking LED stops, and RPI-RP2 re-appears (~30 seconds).
@@ -25,8 +35,8 @@ Flash Alpakka v1 controller (with Marmota core)
 - Controller turns on automatically (LEDs blinking).
 
 
-Flash Dongle (with Marmota core)
---------------------------------
+Flash Dongle (with Marmota module)
+----------------------------------
 - Put the dongle in Boolsel mode (RPI-RP2 drive appears).
 - Copy "wireless_submodule.uf2" to RPI-RP2 drive.
 - Wait until the blinking LED stops, and RPI-RP2 re-appears (~30 seconds).
@@ -37,5 +47,5 @@ Flash Dongle (with Marmota core)
 After flashing
 --------------
 - A horizontal-vertical LED blinking pattern means calibration is missing (or other problems).
-- Check the manual about how to calibrate.
+- Check the manual about how to calibrate: https://inputlabs.io/alpakka/manual/calibrate.
 - If the LED warning pattern persist after calibration, check Ctrl app logs.
