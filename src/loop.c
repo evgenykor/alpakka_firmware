@@ -83,14 +83,16 @@ static void set_wired() {
 }
 
 static void set_wireless() {
-    info("LOOP: Wireless\n");
-    device_mode = WIRELESS;
-    // Show the animation for a fixed time (in lack of a proper pairing system).
-    led_show_cycle2();
-    sleep_ms(2000);
-    led_show();
-    // Prepare UART.
-    wireless_set_uart_data_mode(true);
+    #ifdef DEVICE_HAS_MARMOTA
+        info("LOOP: Wireless\n");
+        device_mode = WIRELESS;
+        // Show the animation for a fixed time (in lack of a proper pairing system).
+        led_show_cycle2();
+        sleep_ms(2000);
+        led_show();
+        // Prepare UART.
+        wireless_set_uart_data_mode(true);
+    #endif
 }
 
 static void set_inactive() {
@@ -107,14 +109,9 @@ static void board_led() {
         i++;
         if (i == 100) {
             i = 0;
-            if (device_mode == WIRED) {
-                if (!gpio_get(PIN_BATT_STAT_1)) {
-                    led_board_set(true);  // Led on indicates battery is charging.
-                } else {
-                    led_board_set(false);
-                }
-            }
-            if (device_mode == WIRELESS) {
+            if (!gpio_get(PIN_BATT_STAT_1)) {
+                led_board_set(true);  // Led on indicates battery is charging.
+            } else {
                 if (battery_low) {
                     blink = !blink;
                     led_board_set(blink);  // Blinking led if battery is low.
@@ -145,11 +142,10 @@ void loop_controller_init() {
     profile_init();
     power_gpio_init();
     wireless_init();
-    if (usb) {
-        set_wired();
-    } else {
-        set_wireless();
-    }
+    set_wired();
+    #if defined DEVICE_ALPAKKA_V1
+        if (!usb) set_wireless();
+    #endif
     loop_run();
 }
 
@@ -178,10 +174,22 @@ void loop_controller_task() {
     profile_report_active();
     // Report to the correct channel.
     if (device_mode == WIRED) {
+        static uint64_t last_report_ts = 0;
+        uint64_t now = time_us_64();
         // Report to USB.
         bool reported = hid_report_wired();
-        // Switch to wireless if USB is disconnected.
-        if (!reported) set_wireless();
+        if (reported) {
+            last_report_ts = now;
+        } else {
+            // If report fails repeatedly.
+            if (last_report_ts && (now - last_report_ts) > REPORT_TIMEOUT_US) {
+                #if defined DEVICE_ALPAKKA_V0
+                    power_dormant();  // In v0, go sleep.
+                #elif defined DEVICE_ALPAKKA_V1
+                    set_wireless();  // In v1, go wireless.
+                #endif
+            }
+        }
     }
     if (device_mode == WIRELESS) {
         wireless_controller_task();
@@ -225,6 +233,7 @@ void loop_llama_init() {
     stdio_uart_init();
     stdio_init_all();
     wireless_init();
+    led_init();
     esp_flash();
 }
 
