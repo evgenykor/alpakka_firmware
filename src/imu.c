@@ -50,7 +50,7 @@ void imu_init_single(uint8_t cs, uint8_t gyro_conf) {
     info("  IMU cs=%i id=0x%02x xl=0b%08i g=0b%08i\n", cs, id, bin(xl), bin(g));
     if (id == 0x00) {
         warn("Gyro was not able to initialize\n");
-        config_set_problem_gyro(true);
+        config_set_problem(PROBLEM_GYRO, true);
     }
 }
 
