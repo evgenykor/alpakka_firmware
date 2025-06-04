@@ -364,6 +364,7 @@ void config_reset_profiles() {
 }
 
 void config_calibrate_execute() {
+    profile_reset_home_sleep(false);  // Ignore if home button is never released.
     led_set_mode(LED_MODE_CYCLE);
     thumbstick_calibrate();
     imu_calibrate();
