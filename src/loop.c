@@ -86,6 +86,11 @@ static void set_wireless() {
     #ifdef DEVICE_HAS_MARMOTA
         info("LOOP: Wireless\n");
         device_mode = WIRELESS;
+        // Show the animation for a fixed time (in lack of a proper pairing system).
+        led_show_cycle2();
+        sleep_ms(FAKE_PAIR_TIME_MS);
+        led_show();
+        // Prepare UART.
         wireless_set_uart_data_mode(true);
     #endif
 }
