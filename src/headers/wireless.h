@@ -5,7 +5,7 @@
 #include "ctrl.h"
 
 #define BATTERY_LOW_THRESHOLD 2810
-#define FAKE_PAIR_TIME_MS = 2000
+#define FAKE_PAIR_TIME_MS 2000
 
 void wireless_init();
 void wireless_controller_task();
