@@ -4,6 +4,9 @@
 #pragma once
 #include "ctrl.h"
 
+#define BATTERY_MIN 2700
+#define BATTERY_MAX 3350
+#define BATTERY_CAPACITY (BATTERY_MAX - BATTERY_MIN)
 #define BATTERY_LOW_THRESHOLD 2810
 #define FAKE_PAIR_TIME_MS 2000
 
