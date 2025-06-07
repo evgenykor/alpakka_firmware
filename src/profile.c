@@ -29,6 +29,7 @@ bool home_gamepad_is_active = false;
 bool enabled_all = true;
 bool enabled_abxy = true;
 Button home;
+uint64_t hold_home_to_sleep_ts = 0;
 
 void Profile__report(Profile *self) {
     if (!enabled_all) return;
@@ -230,10 +231,26 @@ void profile_reset_all() {
 }
 
 void profile_report_active() {
+    // Reboot if needed.
     if (profile_pending_reboot && !home_is_active) power_restart();
+    // Reset all profiles (state) if needed.
     if (pending_reset) profile_reset_all();
+    // Check if home button is held super long, and go to sleep.
+    if (home_is_active && hold_home_to_sleep_ts) {
+        uint64_t threshold = hold_home_to_sleep_ts + (CFG_HOME_SLEEP_TIME*1000);
+        if (time_us_64() > threshold) {
+            info("Dormant mode requested by long press home\n");
+            power_dormant();
+        }
+    }
+    // Report active profile.
     Profile* profile = profile_get_active(false);
     profile->report(profile);
+}
+
+void profile_reset_home_sleep(bool now) {
+    if (now) hold_home_to_sleep_ts = time_us_64();
+    else hold_home_to_sleep_ts = 0;
 }
 
 void profile_set_home(bool state) {
@@ -242,6 +259,7 @@ void profile_set_home(bool state) {
     if (state) {
         led_static_mask(LED_ALL);
         led_set_mode(LED_MODE_ENGAGE);
+        profile_reset_home_sleep(true);  // Init home-to-sleep timer.
     } else {
         profile_update_leds();
     }
@@ -261,11 +279,15 @@ void profile_set_home_gamepad(bool state) {
 }
 
 void profile_set_active(uint8_t index) {
+    // Reset hold-to-sleep countdown if user changes profile.
+    profile_reset_home_sleep(true);
+    // Change profile.
     if (index != profile_active_index) {
         info("Profile: Profile %i\n", index);
         profile_active_index = index;
         config_set_profile(index);
     }
+    // Update frontal leds.
     profile_update_leds();
 }
 

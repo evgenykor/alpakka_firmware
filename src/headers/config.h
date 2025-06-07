@@ -12,7 +12,7 @@
 #define MINOR 1000
 #define PATCH 1
 
-#define NVM_CONFIG_VERSION  ((MAJOR * 1) + (MINOR * 0) + (PATCH * 0))
+#define NVM_CONFIG_VERSION  ((MAJOR * 1) + (MINOR * 1) + (PATCH * 0))
 #define NVM_CONTROL_BYTE 0b01010101
 #define NVM_CONFIG_ADDR 0x001D0000
 #define NVM_CONFIG_SIZE 256
@@ -59,6 +59,7 @@
 #define CFG_HOLD_TIME 200  // Milliseconds.
 #define CFG_HOLD_LONG_TIME 2000  // Milliseconds.
 #define CFG_DOUBLE_PRESS_TIME 300  // Milliseconds.
+#define CFG_HOME_SLEEP_TIME 4000  // Milliseconds.
 
 #define CFG_DHAT_DEBOUNCE_TIME 100  // Milliseconds.
 
@@ -104,6 +105,7 @@ typedef struct __packed _Config {
     bool long_calibration;
     bool swap_gyros;
     bool touch_invert_polarity;
+    uint8_t thumbstick_smooth_samples;
     uint8_t padding[256]; // Guarantee block is at least 256 bytes or more.
 } Config;
 
@@ -152,6 +154,7 @@ void config_set_long_calibration(bool value);
 void config_set_swap_gyros(bool value);
 void config_set_touch_invert_polarity(bool value);
 void config_set_gyro_user_offset(int8_t x, int8_t y, int8_t z);
+void config_set_thumbstick_smooth_samples(uint8_t value);
 
 // Profiles.
 uint8_t config_get_profile();

@@ -93,6 +93,7 @@ void led_show_blink() {
     );
 }
 
+// Circular rotation animation (with a single LED).
 void led_show_cycle_step() {
     led_set(PIN_LED_UP,    cycle_position == 0);
     led_set(PIN_LED_RIGHT, cycle_position == 1);
@@ -107,6 +108,26 @@ void led_show_cycle() {
     add_repeating_timer_ms(
         LED_ANIMATION_FAST,
         (repeating_timer_callback_t)led_show_cycle_step,
+        NULL,
+        &led_timer
+    );
+}
+
+// Circular rotation animation (but with double LED).
+void led_show_cycle2_step() {
+    led_set(PIN_LED_UP,    1<<cycle_position & 0b1001);
+    led_set(PIN_LED_RIGHT, 1<<cycle_position & 0b0011);
+    led_set(PIN_LED_DOWN,  1<<cycle_position & 0b0110);
+    led_set(PIN_LED_LEFT,  1<<cycle_position & 0b1100);
+    cycle_position += 1;
+    if(cycle_position == 4) cycle_position = 0;
+}
+
+void led_show_cycle2() {
+    cycle_position = 0;
+    add_repeating_timer_ms(
+        LED_ANIMATION_FAST,
+        (repeating_timer_callback_t)led_show_cycle2_step,
         NULL,
         &led_timer
     );
@@ -189,6 +210,20 @@ void led_board_set(bool state) {
     gpio_put(PIN_LED_BOARD, state);
 }
 
+void led_board_blink_step() {
+    blink_state = !blink_state;
+    led_board_set(blink_state);
+}
+
+void led_board_blink() {
+    add_repeating_timer_ms(
+        LED_ANIMATION_FAST,
+        (repeating_timer_callback_t)led_board_blink_step,
+        NULL,
+        &led_timer
+    );
+}
+
 void led_init_each(uint8_t pin) {
     gpio_set_function(pin, GPIO_FUNC_PWM);
     uint8_t slice_num = pwm_gpio_to_slice_num(pin);
@@ -201,9 +236,11 @@ void led_init() {
     gpio_init(PIN_LED_BOARD);
     gpio_set_dir(PIN_LED_BOARD, GPIO_OUT);
     gpio_put(PIN_LED_BOARD, false);
-    // Front LEDs.
-    led_init_each(PIN_LED_UP);
-    led_init_each(PIN_LED_RIGHT);
-    led_init_each(PIN_LED_DOWN);
-    led_init_each(PIN_LED_LEFT);
+    #ifndef DEVICE_DONGLE  // Any controller.
+        // Front LEDs.
+        led_init_each(PIN_LED_UP);
+        led_init_each(PIN_LED_RIGHT);
+        led_init_each(PIN_LED_DOWN);
+        led_init_each(PIN_LED_LEFT);
+    #endif
 }
