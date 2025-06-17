@@ -473,7 +473,6 @@ void hid_replay_keyboard() {
     wireless_send_hid(REPORT_KEYBOARD, &last_report_keyboard, sizeof(last_report_keyboard));
     replayed_ntimes[REPORT_KEYBOARD] += 1;
     cycles_without_reporting[REPORT_KEYBOARD] = 0;
-    printf("K\n");
 }
 
 void hid_replay_mouse() {
@@ -486,24 +485,22 @@ void hid_replay_mouse() {
     wireless_send_hid(REPORT_MOUSE, &last_report_mouse, sizeof(last_report_mouse));
     replayed_ntimes[REPORT_MOUSE] += 1;
     cycles_without_reporting[REPORT_MOUSE] = 0;
-    printf("M\n");
 }
 
 void hid_replay_gamepad() {
     wireless_send_hid(REPORT_GAMEPAD, &last_report_gamepad, sizeof(last_report_gamepad));
     replayed_ntimes[REPORT_GAMEPAD] += 1;
     cycles_without_reporting[REPORT_GAMEPAD] = 0;
-    printf("G\n");
 }
 
 void hid_replay_xinput() {
     wireless_send_hid(REPORT_XINPUT, &last_report_xinput, sizeof(last_report_xinput));
     replayed_ntimes[REPORT_GAMEPAD] += 1;
     cycles_without_reporting[REPORT_GAMEPAD] = 0;
-    printf("X\n");
 }
 
 void hid_update_cycles_without_reporting(ReportType type) {
+    if (type == REPORT_XINPUT) type = REPORT_GAMEPAD; // Gamepad and Xinput counter is shared.
     if (cycles_without_reporting[REPORT_KEYBOARD] < 255) cycles_without_reporting[REPORT_KEYBOARD] += 1;
     if (cycles_without_reporting[REPORT_MOUSE] < 255) cycles_without_reporting[REPORT_MOUSE] += 1;
     if (cycles_without_reporting[REPORT_GAMEPAD] < 255) cycles_without_reporting[REPORT_GAMEPAD] += 1;
@@ -524,7 +521,7 @@ bool hid_should_replay(ReportType type) {
     return false;
 }
 
-uint8_t hid_get_priority() {
+ReportType hid_get_priority() {
     // Not all events are sent everytime, they are delivered based on their
     // priority ratio and how long they have been queueing.
     // For example thumbstick movement may be queued for some cycles if there
@@ -539,7 +536,7 @@ uint8_t hid_get_priority() {
     if (synced_mouse && hid_should_replay(REPORT_MOUSE)) return REPORT_REPLAY_MOUSE;
     if (synced_gamepad && hid_should_replay(REPORT_GAMEPAD)) {
         if (config_get_protocol() == PROTOCOL_GENERIC) return REPORT_REPLAY_GAMEPAD;
-        else REPORT_REPLAY_XINPUT;
+        else return REPORT_REPLAY_XINPUT;
     }
     // Evaluate keyboard / mouse / gamepad.
     if (!synced_keyboard) return REPORT_KEYBOARD;
@@ -553,7 +550,7 @@ uint8_t hid_get_priority() {
 
 bool hid_report_wired() {
     if (!hid_allow_communication) return true;
-    uint8_t device_to_report = hid_get_priority();
+    ReportType device_to_report = hid_get_priority();
     tud_task();
     if (tud_ready()) {
         if (tud_hid_ready()) {
@@ -576,7 +573,7 @@ bool hid_report_wired() {
 
 bool hid_report_wireless() {
     if (!hid_allow_communication) return true;
-    uint8_t device_to_report = hid_get_priority();
+    ReportType device_to_report = hid_get_priority();
     if (device_to_report == REPORT_KEYBOARD) hid_report_keyboard(false);
     if (device_to_report == REPORT_MOUSE) hid_report_mouse(false);
     if (device_to_report == REPORT_GAMEPAD) hid_report_gamepad(false);
