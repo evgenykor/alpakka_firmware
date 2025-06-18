@@ -27,6 +27,18 @@ To avoid orphan references, the state matrix is usually re-initialized (reset)
 to zeros when the user changes the active profile, otherwise the disabled
 profile won't ever trigger the corresponding counter decrease of held buttons
 during the profile change.
+
+The replay feature was introduced as a simple mechanism to prevent stuck inputs
+if the last wireless report is lost (since the protocol does not have
+packet-received confirmation nor any resend logic yet).
+It works by re-sending (replaying) the last report of an specific report type
+several times, and therefore reducing the chances that all these packets are
+lost. To determine what is considered "last" it keeps counters of how many
+polling cycles passed since the last report (per report type), then after
+HID_REPLAY_THRESHOLD is excedeed the last report is replayed a fixed amount of
+times determined by HID_REPLAY_N_TIMES. When HID_REPLAY_N_TIMES is excedeed
+nothing will happen anymore until new inputs are sent, which will reset the
+replay counters.
 */
 
 #include <tusb.h>
@@ -527,7 +539,7 @@ ReportType hid_get_priority() {
     // For example thumbstick movement may be queued for some cycles if there
     // is a lot of mouse data being sent.
     //
-    // Calculate priority factors.
+    // Calculate priority ratios.
     hid_evaluate_gamepad_synced(); // Special case because accumulative absolute axis.
     if (!synced_mouse) priority_mouse += 1 * HID_REPORT_PRIORITY_RATIO;
     if (!synced_gamepad) priority_gamepad += 1;
