@@ -511,11 +511,11 @@ void hid_replay_xinput() {
     cycles_without_reporting[REPORT_GAMEPAD] = 0;
 }
 
-void hid_update_cycles_without_reporting(ReportType type) {
+void hid_update_replay_state(ReportType type) {
     if (type == REPORT_XINPUT) type = REPORT_GAMEPAD; // Gamepad and Xinput counter is shared.
-    if (cycles_without_reporting[REPORT_KEYBOARD] < 255) cycles_without_reporting[REPORT_KEYBOARD] += 1;
-    if (cycles_without_reporting[REPORT_MOUSE] < 255) cycles_without_reporting[REPORT_MOUSE] += 1;
-    if (cycles_without_reporting[REPORT_GAMEPAD] < 255) cycles_without_reporting[REPORT_GAMEPAD] += 1;
+    nowrap_u8_increment(cycles_without_reporting[REPORT_KEYBOARD]);
+    nowrap_u8_increment(cycles_without_reporting[REPORT_MOUSE]);
+    nowrap_u8_increment(cycles_without_reporting[REPORT_GAMEPAD]);
     if (type == 0) return;
     cycles_without_reporting[type] = 0;
     replayed_ntimes[type] = 0;
@@ -597,7 +597,7 @@ bool hid_report_wireless() {
     if (device_to_report == REPORT_REPLAY_XINPUT) hid_replay_xinput();
     // Update replay state.
     if (device_to_report <= REPORT_XINPUT) {  // Skip update when a report is being replayed.
-        hid_update_cycles_without_reporting(device_to_report);
+        hid_update_replay_state(device_to_report);
     }
     // Post-process.
     hid_reset_gamepad_axis();
