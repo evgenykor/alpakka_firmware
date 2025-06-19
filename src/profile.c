@@ -21,7 +21,7 @@
 Profile profiles[PROFILE_SLOTS];
 uint8_t profile_active_index = -1;
 bool profile_led_lock = false;  // Extern.
-bool profile_pending_reboot = false;  // Extern.
+static bool profile_pending_reboot = false;
 bool profile_reported_inputs = false;
 bool pending_reset = false;
 uint8_t pending_reset_keep;  // Action that must be kept between resets.
@@ -334,6 +334,10 @@ void profile_enable_all(bool value) {
 
 void profile_enable_abxy(bool value) {
     enabled_abxy = value;
+}
+
+void profile_set_pending_reboot(bool value) {
+    profile_pending_reboot = value;
 }
 
 void profile_init() {
