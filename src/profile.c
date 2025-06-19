@@ -17,11 +17,12 @@
 #include "logging.h"
 #include "common.h"
 #include "power.h"
+#include "wireless.h"
 
 Profile profiles[PROFILE_SLOTS];
 uint8_t profile_active_index = -1;
 bool profile_led_lock = false;  // Extern.
-static bool profile_pending_reboot = false;
+int8_t profile_protocol_changed = -1;  // -1 => No.
 bool profile_reported_inputs = false;
 bool pending_reset = false;
 uint8_t pending_reset_keep;  // Action that must be kept between resets.
@@ -247,8 +248,15 @@ void profile_check_home_sleep() {
 }
 
 void profile_report_active() {
-    // Reboot if needed.
-    if (profile_pending_reboot && !home_is_active) power_restart();
+    // If protocol was changed.
+    if (profile_protocol_changed >= 0 && !home_is_active) {
+        #ifdef DEVICE_ALPAKKA_V1
+            // Notify dongle so it syncs on the same protocol.
+            wireless_send_usb_protocol(profile_protocol_changed);
+            sleep_ms(10);  // Enough time for wireless packet to be sent.
+        #endif
+        power_restart();
+    }
     // Reset all profiles (state) if needed.
     if (pending_reset) profile_reset_all();
     // Report active profile.
@@ -336,8 +344,8 @@ void profile_enable_abxy(bool value) {
     enabled_abxy = value;
 }
 
-void profile_set_pending_reboot(bool value) {
-    profile_pending_reboot = value;
+void profile_set_protocol_changed(Protocol protocol) {
+    profile_protocol_changed = (int8_t)protocol;
 }
 
 void profile_init() {
