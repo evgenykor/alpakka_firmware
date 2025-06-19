@@ -39,6 +39,7 @@ HID_REPLAY_THRESHOLD is excedeed the last report is replayed a fixed amount of
 times determined by HID_REPLAY_N_TIMES. When HID_REPLAY_N_TIMES is excedeed
 nothing will happen anymore until new inputs are sent, which will reset the
 replay counters.
+Flow diagram: docs/replay.md
 */
 
 #include <tusb.h>
@@ -79,7 +80,8 @@ static MouseReport last_report_mouse;
 static GamepadReport last_report_gamepad;
 static XInputReport last_report_xinput;
 
-// Replay state (array to support multiple report types).
+// Replay state (array to support multiple report types), using ReportType as index.
+// 0=unused, 1=keyboard, 2=mouse, 3=gamepad/xinput.
 static bool report_was_sent[4] = {false,};  // Prevent replay if no report was ever sent.
 static uint8_t cycles_without_reporting[4] = {0,};  // Cycles since the last report.
 static uint8_t replayed_ntimes[4] = {0,};  // How many times the last report was replayed.
