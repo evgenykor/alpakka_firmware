@@ -21,17 +21,23 @@
 
 Profile profiles[PROFILE_SLOTS];
 uint8_t profile_active_index = -1;
-bool profile_led_lock = false;  // Extern.
-int8_t profile_protocol_changed = -1;  // -1 => No.
+int8_t profile_protocol_changed = -1;  // -1 => No. (Otherwise Protocol enum).
 bool profile_reported_inputs = false;
+
+// Matrix reset.
 bool pending_reset = false;
 uint8_t pending_reset_keep;  // Action that must be kept between resets.
+
+// Home button.
+Button home;
 bool home_is_active = false;
 bool home_gamepad_is_active = false;
+uint64_t hold_home_to_sleep_ts = 0;
+
+// Locks.
 bool enabled_all = true;
 bool enabled_abxy = true;
-Button home;
-uint64_t hold_home_to_sleep_ts = 0;
+bool profile_led_lock = false;  // Extern.
 
 void Profile__report(Profile *self) {
     if (!enabled_all) return;
