@@ -51,7 +51,7 @@ Tristate bus_i2c_io_tristate(uint8_t index) {
     if ( up !=  down) return TRIESTATE_FLOAT;
     if (!up && !down) return TRIESTATE_DOWN;
     if ( up &&  down) return TRIESTATE_UP;
-    return 0;  // Prevent undefined behavior.
+    return TRIESTATE_FLOAT;  // Prevent undefined behavior.
 }
 
 void bus_i2c_io_pcb_gen_determine() {
