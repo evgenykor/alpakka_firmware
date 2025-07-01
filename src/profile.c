@@ -21,7 +21,7 @@
 
 Profile profiles[PROFILE_SLOTS];
 uint8_t profile_active_index = -1;
-int8_t profile_protocol_changed = -1;  // -1 => No. (Otherwise Protocol enum).
+Protocol profile_protocol_was_changed = PROTOCOL_UNDEFINED;
 bool profile_reported_inputs = false;
 
 // Matrix reset.
@@ -255,10 +255,10 @@ void profile_check_home_sleep() {
 
 void profile_report_active() {
     // If protocol was changed.
-    if (profile_protocol_changed >= 0 && !home_is_active) {
+    if (profile_protocol_was_changed >= 0 && !home_is_active) {
         #ifdef DEVICE_ALPAKKA_V1
             // Notify dongle so it syncs on the same protocol.
-            wireless_send_usb_protocol(profile_protocol_changed);
+            wireless_send_usb_protocol(profile_protocol_was_changed);
             sleep_ms(10);  // Enough time for wireless packet to be sent.
         #endif
         power_restart();
@@ -350,8 +350,9 @@ void profile_enable_abxy(bool value) {
     enabled_abxy = value;
 }
 
-void profile_set_protocol_changed(Protocol protocol) {
-    profile_protocol_changed = (int8_t)protocol;
+void profile_notify_protocol_changed(Protocol protocol) {
+    hid_set_allow_communication(false);
+    profile_protocol_was_changed = (int8_t)protocol;
 }
 
 void profile_init() {

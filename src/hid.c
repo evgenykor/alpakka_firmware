@@ -57,6 +57,8 @@ Flow diagram: docs/replay.md
 #include "thanks.h"
 #include "power.h"
 
+// Toggle to prevent any further communication. Main use case being turning it
+// off while the protocol is being changed to avoid incoherent outputs.
 static bool hid_allow_communication = true;
 
 bool synced_keyboard = false;

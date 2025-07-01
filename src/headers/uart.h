@@ -5,6 +5,7 @@
 
 #define UART_RX_BUFFER_SIZE 1024
 
+// Sequence of control bytes (chosen because these are non-printable, rarely used ASCII codes).
 #define UART_CONTROL_0 30
 #define UART_CONTROL_1 29
 #define UART_CONTROL_2 28
@@ -18,10 +19,10 @@
 #define AT_PAYLOAD_MAX_LEN  (AT_HEADER_LEN + AT_WEBUSB_LEN)
 
 typedef enum _UART_AT {
-    AT_HID = 1,
-    AT_WEBUSB,
-    AT_BATTERY,
-    AT_USB_PROTOCOL,
+    AT_HID = 1,  // Keyboard, mouse or gamepad report (also Xinput).
+    AT_WEBUSB,  // WebUSB relay.
+    AT_BATTERY,  // Battery level.
+    AT_USB_PROTOCOL,  // USB protocol (Windows/Linux/Genetic) automatic dongle sync.
 } UART_AT;
 
 void uart_listen_serial();

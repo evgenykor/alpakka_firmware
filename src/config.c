@@ -427,8 +427,7 @@ void config_set_protocol(uint8_t preset) {
         power_restart();
     #else
         // On controllers: Schedule restart.
-        hid_set_allow_communication(false);
-        profile_set_protocol_changed(preset);
+        profile_notify_protocol_changed(preset);
     #endif
 }
 

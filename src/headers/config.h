@@ -60,6 +60,7 @@
 #define CFG_DHAT_DEBOUNCE_TIME 100  // Milliseconds.
 
 typedef enum _Protocol {
+    PROTOCOL_UNDEFINED = -1,
     PROTOCOL_XINPUT_WIN = 0,
     PROTOCOL_XINPUT_UNIX,
     PROTOCOL_GENERIC,
