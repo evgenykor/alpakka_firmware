@@ -144,7 +144,7 @@ void loop_controller_init() {
     power_gpio_init();
     wireless_init();
     set_wired();
-    if (!usb) {
+    if (!usb) {  // Variable out of the #if block so it is always used.
         #if defined DEVICE_ALPAKKA_V1
             set_wireless();
         #endif
