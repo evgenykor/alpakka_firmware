@@ -12,10 +12,8 @@
 #include "thumbstick.h"
 #include "common.h"
 #include "hid.h"
-#include "led.h"
 #include "profile.h"
 #include "logging.h"
-#include "webusb.h"
 
 float offset_lx = 0;
 float offset_ly = 0;
@@ -350,7 +348,6 @@ void Thumbstick__config_glyphstick(Thumbstick *self, Actions actions, Glyph glyp
 }
 
 void Thumbstick__report_glyphstick(Thumbstick *self, Glyph input) {
-    bool matched = false;
     // Iterate over all defined glyphs.
     uint8_t nglyphs = self->glyphstick_index;
     for(uint8_t i=0; i<nglyphs; i++) {

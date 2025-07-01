@@ -5,8 +5,8 @@
 #include "esp.h"
 #include "config.h"
 #include "pin.h"
-#include "power.h"
 #include "led.h"
+#include "power.h"
 
 void esp_log_state() {
     #ifdef DEVICE_HAS_MARMOTA
