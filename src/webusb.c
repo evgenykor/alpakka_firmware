@@ -71,6 +71,7 @@ bool webusb_transfer(Ctrl ctrl) {
     #elif defined DEVICE_DONGLE
         return webusb_transfer_wired(ctrl);
     #endif
+    return false;
 }
 
 bool webusb_flush() {
